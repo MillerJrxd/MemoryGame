@@ -1,0 +1,98 @@
+﻿<Window x:Class="MemoryGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoryGame"
+        mc:Ignorable="d"
+        Title="MainWindow" Width="650" Height="650"
+        Background="#F5F5F5" FontFamily="Segoe UI" WindowStartupLocation="CenterScreen"
+        SizeToContent="Manual" MinWidth="450" MinHeight="450">
+
+    <Window.Resources>
+        <!-- Gombstílus -->
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#FFD700"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="3" ShadowDepth="1" Color="#888"/>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#90EE90"/>
+                    <Setter Property="Foreground" Value="#333"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Gratuláló üzenet animáció -->
+        <Storyboard x:Key="ShowCongratulations">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:2" Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" From="0.8" To="1.2" AutoReverse="True" Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" From="0.8" To="1.2" AutoReverse="True" Duration="0:0:0.5"/>
+        </Storyboard>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="timerTextBlock" FontSize="16" HorizontalAlignment="Center" Margin="10"
+                   Foreground="#333" FontWeight="Bold" />
+
+        <!-- Kártyarács Grid a dinamikus skálázás érdekében -->
+        <Grid Grid.Row="1" Margin="8">
+            <UniformGrid x:Name="cardGrid" Rows="4" Columns="4" />
+        </Grid>
+
+        <Button x:Name="newGameButton" Content="Új Játék" Grid.Row="2" Click="NewGameButton_Click" Margin="10"
+                Width="100" Height="35" Background="#FF4500" Foreground="White" FontWeight="Bold" BorderThickness="0"
+                HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <!-- Gratuláló üzenet pop-up -->
+        <Popup x:Name="congratulationsPopup" Placement="Center" StaysOpen="False" AllowsTransparency="True" IsOpen="False">
+            <Border Background="#FFFAF0" Padding="20" CornerRadius="10" BorderBrush="#FFD700" BorderThickness="3">
+                <TextBlock x:Name="congratulationsTextBlock" FontSize="24" FontWeight="Bold" Foreground="#FFD700" Text="Gratulálok! Játék befejezve!" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.RenderTransform>
+                        <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Border>
+        </Popup>
+
+        <!-- Új játék üzenet pop-up -->
+        <Popup x:Name="newGamePopup" Placement="Center" StaysOpen="False">
+            <Border Background="#FFFAF0" Padding="10" CornerRadius="8" BorderBrush="#FF4500" BorderThickness="2">
+                <TextBlock FontSize="20" FontWeight="Bold" Foreground="#FF4500" Text="Új játék indult!" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </Popup>
+    </Grid>
+</Window>
