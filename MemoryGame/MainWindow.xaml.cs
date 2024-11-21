@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace MemoryGame
 {
@@ -18,6 +19,7 @@ namespace MemoryGame
     /// </summary>
     public partial class MainWindow : Window
     {
+        private int score = 0;
         private List<string> cardImages;
         private Button firstCard, secondCard;
         private DispatcherTimer gameTimer;
@@ -32,7 +34,6 @@ namespace MemoryGame
 
         private void InitializeGame()
         {
-            // Kártya képek előkészítése
             cardImages = new List<string>
             {
                 "🐶", "🐶", "🐱", "🐱", "🐭", "🐭", "🐹", "🐹",
@@ -40,7 +41,6 @@ namespace MemoryGame
             };
             cardImages = cardImages.OrderBy(x => Guid.NewGuid()).ToList();
 
-            // Kártyák megjelenítése
             cardGrid.Children.Clear();
             foreach (var image in cardImages)
             {
@@ -54,7 +54,6 @@ namespace MemoryGame
                 cardGrid.Children.Add(cardButton);
             }
 
-            // Időmérő inicializálása
             startTime = DateTime.Now;
             gameTimer = new DispatcherTimer
             {
@@ -63,13 +62,16 @@ namespace MemoryGame
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Start();
 
-            // Új játék üzenet megjelenítése
             ShowNewGameMessage();
+        }
+        private void UpdateScore(int points)
+        {
+            score += points;
+            lbScore.Content = score;
         }
 
         private void ShowNewGameMessage()
         {
-            // Popup megjelenítése rövid időre
             newGamePopup.IsOpen = true;
             Task.Delay(2000).ContinueWith(_ =>
             {
@@ -79,7 +81,6 @@ namespace MemoryGame
         private void ShowNewGamePopup()
         {
             newGamePopup.IsOpen = true;
-            // Rövid idő múlva automatikusan záródik
             var timer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
             timer.Tick += (s, args) =>
             {
@@ -103,19 +104,17 @@ namespace MemoryGame
             congratulationsPopup.IsOpen = true;
             Storyboard showAnimation = (Storyboard)FindResource("ShowCongratulations");
 
-            // A TextBlock megtalálása a popup-ban
             var textBlock = FindTextBlock(congratulationsPopup.Child);
 
             if (textBlock != null)
             {
-                // Animáció kezdése
                 showAnimation.Completed += (s, e) => congratulationsPopup.IsOpen = false;
                 showAnimation.Begin(textBlock);
             }
         }
 
 
-            private void GameTimer_Tick(object sender, EventArgs e)
+        private void GameTimer_Tick(object sender, EventArgs e)
         {
             var elapsedTime = DateTime.Now - startTime;
             timerTextBlock.Text = $"Idő: {elapsedTime:mm\\:ss}";
@@ -128,7 +127,6 @@ namespace MemoryGame
             var clickedButton = sender as Button;
             if (clickedButton.Content.ToString() != "❓") return;
 
-            // Kártya felfordítása
             clickedButton.Content = clickedButton.Tag.ToString();
 
             if (firstCard == null)
@@ -140,27 +138,23 @@ namespace MemoryGame
                 secondCard = clickedButton;
                 isChecking = true;
 
-                // Ellenőrzés, hogy egyformák-e
                 if (firstCard.Tag.ToString() == secondCard.Tag.ToString())
                 {
-                    // Páros találat
                     firstCard.IsEnabled = false;
                     secondCard.IsEnabled = false;
                     firstCard = null;
                     secondCard = null;
                     isChecking = false;
+                    UpdateScore(20);
 
-                    // Ellenőrzés, hogy a játék véget ért-e
                     if (cardGrid.Children.OfType<Button>().All(b => !b.IsEnabled))
                     {
                         gameTimer.Stop();
-                        //MessageBox.Show($"Gratulálok! Nyertél! \nIdő: {timerTextBlock.Text}");
                         ShowCongratulations();
                     }
                 }
                 else
                 {
-                    // Hibás találat, visszafordítás egy kis késéssel
                     await Task.Delay(1000);
                     firstCard.Content = "❓";
                     secondCard.Content = "❓";

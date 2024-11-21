@@ -10,7 +10,6 @@
         SizeToContent="Manual" MinWidth="450" MinHeight="450">
 
     <Window.Resources>
-        <!-- Gombstílus -->
         <Style TargetType="Button">
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -47,7 +46,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Gratuláló üzenet animáció -->
         <Storyboard x:Key="ShowCongratulations">
             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:2" Duration="0:0:0.5"/>
@@ -63,10 +61,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <Label Margin="481,10,94,10" FontSize="20">Score:</Label>
+        <Label x:Name="lbScore" Margin="556,10,28,40" FontSize="20">0</Label>
+
         <TextBlock x:Name="timerTextBlock" FontSize="16" HorizontalAlignment="Center" Margin="10"
                    Foreground="#333" FontWeight="Bold" />
 
-        <!-- Kártyarács Grid a dinamikus skálázás érdekében -->
         <Grid Grid.Row="1" Margin="8">
             <UniformGrid x:Name="cardGrid" Rows="4" Columns="4" />
         </Grid>
@@ -75,7 +75,6 @@
                 Width="100" Height="35" Background="#FF4500" Foreground="White" FontWeight="Bold" BorderThickness="0"
                 HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <!-- Gratuláló üzenet pop-up -->
         <Popup x:Name="congratulationsPopup" Placement="Center" StaysOpen="False" AllowsTransparency="True" IsOpen="False">
             <Border Background="#FFFAF0" Padding="20" CornerRadius="10" BorderBrush="#FFD700" BorderThickness="3">
                 <TextBlock x:Name="congratulationsTextBlock" FontSize="24" FontWeight="Bold" Foreground="#FFD700" Text="Gratulálok! Játék befejezve!" 
@@ -87,7 +86,6 @@
             </Border>
         </Popup>
 
-        <!-- Új játék üzenet pop-up -->
         <Popup x:Name="newGamePopup" Placement="Center" StaysOpen="False">
             <Border Background="#FFFAF0" Padding="10" CornerRadius="8" BorderBrush="#FF4500" BorderThickness="2">
                 <TextBlock FontSize="20" FontWeight="Bold" Foreground="#FF4500" Text="Új játék indult!" 
